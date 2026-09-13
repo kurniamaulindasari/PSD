@@ -468,11 +468,6 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#file-final-no2-labang-tsfel-csv">6.1 File final: <code class="docutils literal notranslate"><span class="pre">NO2_Labang_TSFEL.csv</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kesimpulan-akhir">7. Kesimpulan Akhir</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#file-file-yang-dihasilkan">File-file yang dihasilkan</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#peringatan-paling-penting">Peringatan paling penting</a></li>
-</ul>
-</li>
 </ul>
             </nav>
         </div>
@@ -3942,55 +3937,6 @@ File final tervalidasi: 1 baris x 68 kolom, siap dikumpulkan.
 </div>
 </section>
 </section>
-<section id="kesimpulan-akhir">
-<h2>7. Kesimpulan Akhir<a class="headerlink" href="#kesimpulan-akhir" title="Link to this heading">#</a></h2>
-<p>Ringkasan seluruh tahapan CRISP-DM yang telah dikerjakan:</p>
-<div class="pst-scrollable-table-container"><table class="table">
-<thead>
-<tr class="row-odd"><th class="head"><p>Tahap</p></th>
-<th class="head"><p>Ringkasan</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Business Understanding</strong></p></td>
-<td><p>menentukan tujuan mengekstrak 68 fitur karakteristik time series NO2 Kecamatan Labang</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Data Understanding</strong></p></td>
-<td><p>sumber data Sentinel-5P TROPOMI via openEO, AOI dari <code class="docutils literal notranslate"><span class="pre">Kecamatan_Labang.geojson</span></code>, periode 31-08-2025 s.d. 31-08-2026</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Data Preparation</strong></p></td>
-<td><p>konversi NetCDF → CSV mentah (<strong>dapat diunduh</strong>) → kalender harian penuh → deteksi outlier (IQR) → imputasi (interpolasi waktu + ffill/bfill) → validasi</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Modeling</strong></p></td>
-<td><p>kode ekstraksi TSFEL dosen dijalankan <strong>tanpa perubahan</strong> dengan <code class="docutils literal notranslate"><span class="pre">fs</span> <span class="pre">=</span> <span class="pre">1</span></code>, menghasilkan tepat 68 fitur</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Evaluation</strong></p></td>
-<td><p>validasi 366 hari, missing = 0, infinity = 0, output = 68 fitur sesuai nama &amp; urutan</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Deployment</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">NO2_Labang_TSFEL.csv</span></code> → diunggah ke website dosen → di-<em>insert</em> ke tabel Aiven PostgreSQL</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Integrasi lanjutan</strong></p></td>
-<td><p>tabel Aiven dihubungkan ke <strong>KNIME Analytics Platform</strong> melalui node PostgreSQL Connector → DB Query Reader → (Table View → CSV Writer) &amp; (Column Filter → Statistics)</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<section id="file-file-yang-dihasilkan">
-<h3>File-file yang dihasilkan<a class="headerlink" href="#file-file-yang-dihasilkan" title="Link to this heading">#</a></h3>
-<ol class="arabic simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">NO2_Labang_raw.csv</span></code> — data mentah, <strong>sebelum</strong> dibersihkan (diunduh pada Bagian 3.7).</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">NO2_Labang_clean.csv</span></code> — data setelah deteksi outlier &amp; imputasi (diunduh pada Bagian 3.13).</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">NO2_Labang_TSFEL.csv</span></code> — <strong>file final</strong>, 1 baris × 68 kolom fitur (diunduh pada Bagian 6.1, <strong>tidak boleh diubah</strong>).</p></li>
-</ol>
-</section>
-<section id="peringatan-paling-penting">
-<h3>Peringatan paling penting<a class="headerlink" href="#peringatan-paling-penting" title="Link to this heading">#</a></h3>
-<blockquote>
-<div><p>Setelah <code class="docutils literal notranslate"><span class="pre">NO2_Labang_TSFEL.csv</span></code> dihasilkan, <strong>jangan mengubah sedikit pun</strong> nama, jumlah, atau urutan kolomnya. Informasi nama mahasiswa dan kecamatan dimasukkan melalui <strong>form</strong> pada website dosen, bukan dengan menyunting isi file CSV.</p>
-</div></blockquote>
-</section>
-</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -4100,11 +4046,6 @@ File final tervalidasi: 1 baris x 68 kolom, siap dikumpulkan.
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#deployment">6. Deployment</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#file-final-no2-labang-tsfel-csv">6.1 File final: <code class="docutils literal notranslate"><span class="pre">NO2_Labang_TSFEL.csv</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kesimpulan-akhir">7. Kesimpulan Akhir</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#file-file-yang-dihasilkan">File-file yang dihasilkan</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#peringatan-paling-penting">Peringatan paling penting</a></li>
 </ul>
 </li>
 </ul>
