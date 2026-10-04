@@ -1,0 +1,166 @@
+Traceback (most recent call last):
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/home/codespace/.local/lib/python3.12/site-packages/nbclient/client.py", line 1323, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/asyncio/base_events.py", line 684, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/nbclient/client.py", line 709, in async_execute
+    await self.async_execute_cell(
+  File "/home/codespace/.local/lib/python3.12/site-packages/nbclient/client.py", line 1062, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/home/codespace/.local/lib/python3.12/site-packages/nbclient/client.py", line 918, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+import geopandas as gpd
+import openeo
+import pandas as pd
+from google.colab import files
+
+# 1. PILIH FILE ZIP SAWAH DAN NON-SAWAH
+
+print("Pilih file ZIP SAWAH...")
+upload_sawah = files.upload()
+
+print("Pilih file ZIP NON-SAWAH...")
+upload_nonsawah = files.upload()
+
+nama_file_sawah = list(upload_sawah.keys())[0]
+nama_file_nonsawah = list(upload_nonsawah.keys())[0]
+
+print("File Sawah     :", nama_file_sawah)
+print("File Non-Sawah :", nama_file_nonsawah)
+
+# 2. BACA FILE ZIP
+
+gdf_sawah = gpd.read_file(nama_file_sawah).to_crs("EPSG:4326")
+gdf_nonsawah = gpd.read_file(nama_file_nonsawah).to_crs("EPSG:4326")
+
+# Label sawah
+gdf_sawah["label_teks"] = "Sawah"
+gdf_sawah["label"] = 1
+
+# Label non-sawah
+gdf_nonsawah["label_teks"] = "Non-Sawah"
+gdf_nonsawah["label"] = 0
+
+
+# 3. GABUNGKAN DATA
+
+gdf_gabungan = gpd.GeoDataFrame(
+    pd.concat(
+        [gdf_sawah, gdf_nonsawah],
+        ignore_index=True
+    ),
+    crs="EPSG:4326"
+)
+
+print()
+print("Jumlah sampel Sawah     :", len(gdf_sawah))
+print("Jumlah sampel Non-Sawah :", len(gdf_nonsawah))
+print("Total sampel gabungan   :", len(gdf_gabungan))
+
+
+# 4. MEMBUAT BOUNDING BOX
+
+minx, miny, maxx, maxy = gdf_gabungan.total_bounds
+
+buffer_deg = 0.005
+
+bbox = {
+    "west": float(minx - buffer_deg),
+    "south": float(miny - buffer_deg),
+    "east": float(maxx + buffer_deg),
+    "north": float(maxy + buffer_deg),
+}
+
+print()
+print("Bounding Box Gabungan:")
+print(bbox)
+
+# 5. KONEKSI KE OPENEO
+
+print()
+print("Menghubungkan ke openEO...")
+
+conn = openeo.connect(
+    "openeo.dataspace.copernicus.eu"
+)
+
+conn.authenticate_oidc()
+
+# 6. AMBIL DATA SENTINEL-2
+
+datacube = conn.load_collection(
+    "SENTINEL2_L2A",
+    spatial_extent=bbox,
+    temporal_extent=[
+        "2026-05-01",
+        "2026-09-30"
+    ],
+    bands=[
+        "B02",  # Blue
+        "B03",  # Green
+        "B04",  # Red
+        "B08",  # NIR
+        "B11",  # SWIR
+    ],
+    max_cloud_cover=10,
+)
+
+# 7. MEDIAN COMPOSITE
+
+print()
+print("Membuat median composite...")
+
+composite_s2 = datacube.median_time()
+
+
+# 8. DOWNLOAD CITRA SENTINEL-2
+
+nama_tif = "sentinel2_sawah_nonsawah.tif"
+
+print()
+print("Mengunduh citra Sentinel-2...")
+print("Mohon tunggu sampai proses selesai...")
+
+composite_s2.download(
+    nama_tif,
+    format="GTiff"
+)
+
+print()
+print("==============================================")
+print("CITRA SENTINEL-2 BERHASIL DIUNDUH DI COLAB")
+print("Nama file:", nama_tif)
+print("==============================================")
+
+
+# 9. OTOMATIS DOWNLOAD KE KOMPUTER
+
+print()
+print("Mengirim file ke komputer...")
+
+files.download(nama_tif)
+
+print("Download otomatis dimulai.")
+------------------
+
+
+[31m---------------------------------------------------------------------------[39m
+[31mModuleNotFoundError[39m                       Traceback (most recent call last)
+[36mCell[39m[36m [39m[32mIn[3][39m[32m, line 4[39m
+[32m      2[39m [38;5;28;01mimport[39;00m[38;5;250m [39m[34;01mopeneo[39;00m
+[32m      3[39m [38;5;28;01mimport[39;00m[38;5;250m [39m[34;01mpandas[39;00m[38;5;250m [39m[38;5;28;01mas[39;00m[38;5;250m [39m[34;01mpd[39;00m
+[32m----> [39m[32m4[39m [38;5;28;01mfrom[39;00m[38;5;250m [39m[34;01mgoogle[39;00m[34;01m.[39;00m[34;01mcolab[39;00m[38;5;250m [39m[38;5;28;01mimport[39;00m files
+[32m      6[39m [38;5;66;03m# 1. PILIH FILE ZIP SAWAH DAN NON-SAWAH[39;00m
+[32m      8[39m [38;5;28mprint[39m([33m"[39m[33mPilih file ZIP SAWAH...[39m[33m"[39m)
+
+[31mModuleNotFoundError[39m: No module named 'google'
+
